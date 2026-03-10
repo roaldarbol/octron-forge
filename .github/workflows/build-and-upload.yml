@@ -36,5 +36,5 @@ jobs:
         run: |
           for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \)); do
             echo "Uploading ${pkg}"
-            rattler-build upload prefix -c <your-channel> "${pkg}"
+            rattler-build upload prefix -c octron "${pkg}"
           done
