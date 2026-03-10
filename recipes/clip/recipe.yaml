@@ -28,6 +28,7 @@ requirements:
     - regex
     - tqdm
     - pillow
+    - packaging
 
 tests:
   - python:
