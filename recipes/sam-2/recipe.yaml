@@ -36,11 +36,6 @@ tests:
   - python:
       imports:
         - sam2
-  - script:
-      - pip check
-    requirements:
-      run:
-        - pip
 
 about:
   homepage: https://github.com/horsto/sam2

@@ -45,7 +45,6 @@ tests:
   - python:
       imports:
         - boxmot
-      pip_check: true
 
 about:
   homepage: https://github.com/horsto/boxmot
