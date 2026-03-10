@@ -24,10 +24,10 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build recipe
-        uses: prefix-dev/rattler-build-action@v0.2.34
+        uses: prefix-dev/rattler-build-action@v0.2.36
         with:
           recipe-path: recipes/${{ matrix.recipe }}/recipe.yaml
           upload-artifact: true
