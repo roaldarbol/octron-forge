@@ -20,18 +20,21 @@ jobs:
       fail-fast: false
 
     permissions:
-      id-token: write  # required for OIDC / Trusted Publishers
+      id-token: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Build recipe
-        uses: prefix-dev/rattler-build-action@v0.1
+        uses: prefix-dev/rattler-build-action@v0.2.34
         with:
           recipe-path: recipes/${{ matrix.recipe }}/recipe.yaml
           upload-artifact: true
 
       - name: Upload to Prefix
-        uses: prefix-dev/upload-conda-action@v0.1
-        with:
-          channel: octron
+        run: |
+          for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \)); do
+            echo "Uploading ${pkg}"
+            rattler-build upload prefix -c <your-channel> "${pkg}"
+          done
