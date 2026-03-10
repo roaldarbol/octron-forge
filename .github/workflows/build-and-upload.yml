@@ -19,6 +19,8 @@ jobs:
             path: recipes/boxmot/**
           - recipe: clip
             path: recipes/clip/**
+          - recipe: octron
+            path: recipes/octron/**
       fail-fast: false
 
     permissions:

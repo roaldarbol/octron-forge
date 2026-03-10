@@ -1,0 +1,78 @@
+schema_version: 1
+
+context:
+  version: "0.2"  # set to match your git tag
+
+package:
+  name: octron
+  version: ${{ version }}
+
+source:
+  url: https://github.com/OCTRON-tracking/OCTRON-GUI/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: f034c63ec85f8b6e9b0b7d3b7646f036c28f7752e8bfc1c5eca78c544e6bfe51
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - export SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}  # [unix]
+    - set SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}     # [win]
+    - python -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      - octron-gui = octron.main:octron_gui
+      - octron-gif = octron.tools.mp4_to_gif:main
+      - octron-test-gpu = octron.test_gpu:check_gpu_access
+
+requirements:
+  host:
+    - python =3.11
+    - pip
+    - setuptools >=62.3.0,<75.8.1
+    - wheel
+    - setuptools_scm >=6.3
+  run:
+    - python =3.11
+    - napari >=0.6.6
+    - numpy <=2.1.1
+    - qtpy >=2.4.3
+    - pytorch >=2.5.1
+    - torchvision >=0.20.1
+    - tqdm >=4.67.1
+    - scipy >=1.15.1
+    - pandas >=2.2.3
+    - scikit-image >=0.25.0
+    - zarr >=3.1.2
+    - kornia >=0.8.0
+    - cmasher >=1.9.2
+    - imantics
+    - ultralytics >=8.4.19
+    - setuptools
+    - tensorboard >=2.19.0
+    - lap >=0.5.12
+    - py-opencv >=4.11.0
+    - natsort >=8.4.0
+    - huggingface_hub >=1.5.0
+    - transformers >=5.2.0
+    - timm >=1.0.25
+    - napari-pyav-octron    # your channel
+    - sam2-octron           # your channel
+    - boxmot-octron         # your channel
+    - clip-octron           # your channel
+
+tests:
+  - python:
+      imports:
+        - octron
+      pip_check: false
+
+about:
+  homepage: https://github.com/OCTRON-tracking/OCTRON-GUI
+  summary: "OCTRON - segmentation and tracking for animal behavior quantification"
+  license: GPL-3.0-or-later
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - roaldarbol
+    - horsto
