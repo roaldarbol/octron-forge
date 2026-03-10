@@ -1,0 +1,54 @@
+schema_version: 1
+
+context:
+  version: "0.0.2"
+
+package:
+  name: sam2-octron
+  version: ${{ version }}
+
+source:
+  url: https://github.com/horsto/sam2/archive/refs/tags/v${{ version }}.tar.gz
+  sha256: 5695f453b532d8b2d7799490f4b19b6762b872953ac555c17fba015ab59ff042
+
+build:
+  number: 0
+  noarch: python
+  script:
+    - python -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python =3.11
+    - pip
+    - setuptools
+  run:
+    - python =3.11
+    - pytorch >=2.5.1
+    - torchvision >=0.20.1
+    - hydra-core >=1.3.2
+    - iopath >=0.1.10
+    - pillow >=9.4.0
+    - tqdm
+    - scikit-image
+
+tests:
+  - python:
+      imports:
+        - sam2
+  - script:
+      - pip check
+    requirements:
+      run:
+        - pip
+
+about:
+  homepage: https://github.com/horsto/sam2
+  summary: "SAM 2 (OCTRON fork with SAM-HQ compatibility)"
+  license: Apache-2.0
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - roaldarbol
+    - horsto

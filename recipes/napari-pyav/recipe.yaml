@@ -1,0 +1,49 @@
+schema_version: 1
+
+context:
+  version: "0.0.10"
+
+package:
+  name: napari-pyav-octron
+  version: ${{ version }}
+
+source:
+  url: https://github.com/horsto/napari-pyav/archive/refs/tags/v${{ version }}.1.tar.gz
+  sha256: 0e8053a3ff24a4188875fd4e895f1ef0d350215e1a4fd1ca8fb896202492a511
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python =3.11
+    - pip
+    - setuptools >=42.0.0
+    - wheel
+  run:
+    - python =3.11
+    - numpy
+    - napari
+    - scikit-image
+    - magicgui
+    - av
+    - sounddevice
+
+tests:
+  - python:
+      imports:
+        - napari_pyav
+      pip_check: true
+
+about:
+  homepage: https://github.com/horsto/napari-pyav
+  summary: "Fast video reader and video (+sound) player widget for napari (OCTRON fork)."
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - roaldarbol
+    - horsto

@@ -1,0 +1,59 @@
+schema_version: 1
+
+context:
+  version: "15.0.5"
+
+package:
+  name: boxmot-octron
+  version: ${{ version }}
+
+source:
+  url: https://github.com/horsto/boxmot/archive/refs/tags/v.${{ version }}.2.tar.gz
+  sha256: 2704cd562cb3826cb45cd32b60afb4afb22a8c85d9eb702931a71aea0cb8345e
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      - boxmot = boxmot.engine.cli:main
+
+requirements:
+  host:
+    - python =3.11
+    - pip
+    - hatchling
+  run:
+    - python =3.11
+    - click >=8.1.8
+    - filterpy >=1.4.5,<2.0.0
+    - ftfy >=6.1.3,<7.0.0
+    - gdown >=5.1.0,<6.0.0
+    - lap >=0.5.12,<1.0.0       # NOTE: check conda-forge availability; wraps lap
+    - loguru >=0.7.2,<1.0.0
+    - numpy
+    - py-opencv >=4.7.0,<5.0.0
+    - pandas >=2.0.0,<3.0.0
+    - regex >=2024.0.0,<2025.0.0
+    - scikit-learn >=1.3.0,<2.0.0
+    - pytorch >=2.2.1,<3.0.0
+    - torchvision >=0.17.1,<1.0.0
+    - yacs >=0.1.8,<1.0.0
+
+tests:
+  - python:
+      imports:
+        - boxmot
+      pip_check: true
+
+about:
+  homepage: https://github.com/horsto/boxmot
+  summary: "BoxMOT: pluggable SOTA tracking modules for segmentation, object detection and pose estimation models (OCTRON fork)."
+  license: AGPL-3.0-only
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - roaldarbol
+    - horsto
