@@ -1,0 +1,47 @@
+schema_version: 1
+
+context:
+  # CLIP has no real version - use a date or short commit hash
+  version: "2026.03.10"
+
+package:
+  name: clip-octron
+  version: ${{ version }}
+
+source:
+  git: https://github.com/ultralytics/CLIP.git
+  rev: 88ade288431a46233f1556d1e141901b3ef0a36b # pin to a specific commit for reproducibility
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python =3.11
+    - pip
+  run:
+    - python =3.11
+    - pytorch
+    - ftfy
+    - regex
+    - tqdm
+    - pillow
+
+tests:
+  - python:
+      imports:
+        - clip
+      pip_check: false
+
+about:
+  homepage: https://github.com/ultralytics/CLIP
+  summary: "CLIP (Ultralytics fork, used by OCTRON)"
+  license: MIT
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - roaldarbol
+    - horsto
