@@ -31,6 +31,7 @@ jobs:
         with:
           recipe-path: recipes/${{ matrix.recipe }}/recipe.yaml
           upload-artifact: true
+          artifact-name: package-${{ matrix.recipe }}
 
       - name: Upload to Prefix
         run: |
