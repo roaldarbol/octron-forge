@@ -13,19 +13,19 @@ jobs:
         include:
           - recipe: sam-2
             path: recipes/sam-2/**
-            extra_args: ""
+            build_args: "--channel conda-forge"
           - recipe: napari-pyav
             path: recipes/napari-pyav/**
-            extra_args: ""
+            build_args: "--channel conda-forge"
           - recipe: boxmot
             path: recipes/boxmot/**
-            extra_args: ""
+            build_args: "--channel conda-forge"
           - recipe: clip
             path: recipes/clip/**
-            extra_args: ""
+            build_args: "--channel conda-forge"
           - recipe: octron
             path: recipes/octron/**
-            extra_args: "--channel https://prefix.dev/octron --channel conda-forge"
+            build_args: "--channel https://prefix.dev/octron --channel conda-forge"
       fail-fast: false
 
     permissions:
@@ -53,7 +53,7 @@ jobs:
           recipe-path: recipes/${{ matrix.recipe }}/recipe.yaml
           upload-artifact: true
           artifact-name: package-${{ matrix.recipe }}
-          extra-args: ${{ matrix.extra_args }}
+          build-args: ${{ matrix.build_args }}
 
       - name: Upload to Prefix
         if: steps.changes.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
