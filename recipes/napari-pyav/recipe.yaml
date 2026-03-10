@@ -29,7 +29,7 @@ requirements:
     - scikit-image
     - magicgui
     - av
-    - sounddevice
+    # - sounddevice
 
 tests:
   - python:
