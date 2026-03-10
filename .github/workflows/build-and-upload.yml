@@ -17,6 +17,8 @@ jobs:
             path: recipes/napari-pyav/**
           - recipe: boxmot
             path: recipes/boxmot/**
+          - recipe: clip
+            path: recipes/clip/**
       fail-fast: false
 
     permissions:
