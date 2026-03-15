@@ -33,6 +33,7 @@ requirements:
     - setuptools_scm >=6.3
   run:
     - python =3.11
+    - ffmpeg >=8.0
     - napari >=0.6.6
     - numpy <=2.1.1
     - qtpy >=2.4.3
