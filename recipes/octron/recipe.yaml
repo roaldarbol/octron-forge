@@ -12,12 +12,17 @@ source:
   sha256: f034c63ec85f8b6e9b0b7d3b7646f036c28f7752e8bfc1c5eca78c544e6bfe51
 
 build:
-  number: 1
+  number: 2
   noarch: python
   script:
     - export SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}  # [unix]
     - set SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}     # [win]
     - python -m pip install . -vv --no-deps --no-build-isolation
+    - mkdir -p "$PREFIX/Menu"
+    - cp "$RECIPE_DIR/menu.json" "$PREFIX/Menu/octron_menu.json"
+    - cp "$RECIPE_DIR/octron.png" "$PREFIX/Menu/octron.png"
+    - cp "$RECIPE_DIR/octron.icns" "$PREFIX/Menu/octron.icns"
+    - cp "$RECIPE_DIR/octron.ico" "$PREFIX/Menu/octron.ico"
   python:
     entry_points:
       - octron-gui = octron.main:octron_gui

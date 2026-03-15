@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schemas.conda.org/menuinst-1-1-0.schema.json",
+  "$id": "https://schemas.conda.org/menuinst-1-1-0.schema.json",
+  "menu_name": "OCTRON",
+  "menu_items": [
+    {
+      "name": "OCTRON",
+      "description": "OCTRON - segmentation and tracking for animal behavior quantification",
+      "command": [
+        "{{ PYTHON }}",
+        "-m",
+        "octron.main"
+      ],
+      "icon": "{{ MENU_DIR }}/octron.{{ ICON_EXT }}",
+      "activate": true,
+      "terminal": false,
+      "platforms": {
+        "linux": {
+          "precommand": "cd \"$(mktemp -d)\"",
+          "Categories": ["Science"]
+        },
+        "osx": {
+          "precommand": "cd \"$(mktemp -d)\"",
+          "CFBundleIdentifier": "com.octron.octron",
+          "CFBundleName": "OCTRON",
+          "CFBundleDisplayName": "OCTRON"
+        },
+        "win": {
+          "desktop": true,
+          "precommand": "cd /d \"%TEMP%\""
+        }
+      }
+    }
+  ]
+}
