@@ -1,12 +1,11 @@
 on:
-  push:
+  pull_request:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
-    name: Build and upload (${{ matrix.recipe }})
+    name: Build (${{ matrix.recipe }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -32,7 +31,6 @@ jobs:
       fail-fast: false
 
     permissions:
-      id-token: write
       contents: read
 
     steps:
@@ -43,25 +41,17 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if git diff --name-only HEAD~1 HEAD | grep -q "^${{ matrix.path }}/"; then
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q "^${{ matrix.path }}/"; then
             echo "changed=true" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Build recipe
-        if: steps.changes.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        if: steps.changes.outputs.changed == 'true'
         uses: prefix-dev/rattler-build-action@v0.2.34
         with:
           recipe-path: recipes/${{ matrix.recipe }}/recipe.yaml
           upload-artifact: true
           artifact-name: package-${{ matrix.recipe }}
           build-args: ${{ matrix.build_args }}
-
-      - name: Upload to Prefix
-        if: steps.changes.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          for pkg in $(find output -type f \( -name "*.conda" -o -name "*.tar.bz2" \)); do
-            echo "Uploading ${pkg}"
-            rattler-build upload prefix -c octron "${pkg}"
-          done
