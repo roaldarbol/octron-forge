@@ -1,0 +1,44 @@
+schema_version: 1
+
+context:
+  version: "3.0"
+
+package:
+  name: cotracker-octron
+  version: ${{ version }}
+
+source:
+  git: https://github.com/facebookresearch/co-tracker.git
+  rev: 82e02e8029753ad4ef13cf06be7f4fc5facdda4d # pin to a specific commit for reproducibility
+
+build:
+  number: 1
+  noarch: python
+  script: python -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python =3.11
+    - pip
+  run:
+    - python =3.11
+    - pytorch
+    - torchvision
+    - einops
+
+tests:
+  - python:
+      imports:
+        - cotracker
+      pip_check: false
+
+about:
+  homepage: https://github.com/facebookresearch/co-tracker
+  summary: "CoTracker (Meta, used by OCTRON)"
+  license: CC-BY-NC-4.0
+  license_file: LICENSE.md
+
+extra:
+  recipe-maintainers:
+    - roaldarbol
+    - horsto
