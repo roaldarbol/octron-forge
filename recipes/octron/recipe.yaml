@@ -1,23 +1,30 @@
 schema_version: 1
 
 context:
-  version: "0.2"  # set to match your git tag
+  version: "0.2.1"  # set to match your git tag
 
 package:
   name: octron
   version: ${{ version }}
 
 source:
-  url: https://github.com/OCTRON-tracking/OCTRON-GUI/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: f034c63ec85f8b6e9b0b7d3b7646f036c28f7752e8bfc1c5eca78c544e6bfe51
+  - url: https://github.com/OCTRON-tracking/OCTRON-GUI/archive/refs/tags/v${{ version }}.tar.gz
+    sha256: 32d123232ecbb6aeb6a01f9b9cbbded635625216beb0b24f5cc367c515a7ee9a
+  - path: menu
+    target_directory: menu
 
 build:
-  number: 2
+  number: 0
   noarch: python
   script:
     - export SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}  # [unix]
     - set SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}     # [win]
     - python -m pip install . -vv --no-deps --no-build-isolation
+    # noarch:python builds once on Linux; the Menu files ship in the package and
+    # menuinst consumes them per-platform at install time.
+    - mkdir -p $PREFIX/Menu
+    - cp menu/menu.json $PREFIX/Menu/octron.json
+    - cp menu/octron.ico menu/octron.icns menu/octron.png $PREFIX/Menu/
   python:
     entry_points:
       - octron-gui = octron.main:octron_gui
@@ -33,9 +40,10 @@ requirements:
     - setuptools_scm >=6.3
   run:
     - python =3.11
+    - menuinst >=2          # creates the desktop/start-menu launcher on install
     - ffmpeg >=8.0
-    - napari >=0.6.6
-    - numpy <=2.1.1
+    - napari >=0.7.1
+    - numpy >=2.1.0
     - qtpy >=2.4.3
     - pyqt6
     - pytorch >=2.5.1
@@ -44,16 +52,20 @@ requirements:
     - scipy >=1.15.1
     - pandas >=2.2.3
     - scikit-image >=0.25.0
-    - zarr >=3.1.2
+    - tifffile
+    - zarr ==3.1.6    # newer versions require a python version bump
     - kornia >=0.8.0
     - cmasher >=1.9.2
     - imantics
-    - ultralytics >=8.4.19
+    - ultralytics >=8.4.46
     - setuptools
     - tensorboard >=2.19.0
     - lap >=0.5.12
     - py-opencv >=4.11.0
     - natsort >=8.4.0
+    - loguru >=0.7
+    - platformdirs >=4.0
+    - typer >=0.12.0
     - huggingface_hub >=1.5.0
     - transformers >=5.2.0
     - timm >=1.0.25
