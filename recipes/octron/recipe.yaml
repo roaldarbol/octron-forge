@@ -14,7 +14,7 @@ source:
     target_directory: menu
 
 build:
-  number: 1
+  number: 2
   noarch: python
   script:
     - export SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}  # [unix]
@@ -27,6 +27,7 @@ build:
     - cp menu/octron.ico menu/octron.icns menu/octron.png $PREFIX/Menu/
   python:
     entry_points:
+      - octron = octron.cli:main
       - octron-gui = octron.main:octron_gui
       - octron-gif = octron.tools.mp4_to_gif:main
       - octron-test-gpu = octron.test_gpu:check_gpu_access
