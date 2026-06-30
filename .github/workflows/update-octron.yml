@@ -1,0 +1,95 @@
+name: Update OCTRON recipe
+
+# Watches the upstream OCTRON-GUI repo for new releases and, when one appears,
+# opens a PR bumping the recipe's version + sha256 and resetting the build number.
+# Dependency pins are intentionally left untouched — those need a human to compare
+# against upstream pyproject.toml (see the PR body checklist).
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    name: Check for new OCTRON release
+    runs-on: ubuntu-latest
+    env:
+      UPSTREAM: OCTRON-tracking/OCTRON-GUI
+      RECIPE: recipes/octron/recipe.yaml
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Resolve latest upstream version
+        id: latest
+        run: |
+          tag=$(gh release view --repo "$UPSTREAM" --json tagName --jq .tagName)
+          version="${tag#v}"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          current=$(grep -oP '^\s*version:\s*"\K[^"]+' "$RECIPE" | head -1)
+          echo "current=$current" >> "$GITHUB_OUTPUT"
+          echo "Upstream: $version | recipe: $current"
+          if [ "$version" = "$current" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compute new sha256
+        if: steps.latest.outputs.changed == 'true'
+        id: sha
+        run: |
+          url="https://github.com/$UPSTREAM/archive/refs/tags/v${{ steps.latest.outputs.version }}.tar.gz"
+          sha=$(curl -sL "$url" | sha256sum | cut -d' ' -f1)
+          echo "sha256=$sha" >> "$GITHUB_OUTPUT"
+          echo "sha256 = $sha"
+
+      - name: Update recipe
+        if: steps.latest.outputs.changed == 'true'
+        env:
+          NEW_VERSION: ${{ steps.latest.outputs.version }}
+          NEW_SHA: ${{ steps.sha.outputs.sha256 }}
+        run: |
+          python - <<'PY'
+          import os, re
+          path = os.environ["RECIPE"]
+          ver = os.environ["NEW_VERSION"]
+          sha = os.environ["NEW_SHA"]
+          text = open(path, encoding="utf-8").read()
+          text = re.sub(r'(\n\s*version:\s*")[^"]+(")', rf'\g<1>{ver}\g<2>', text, count=1)
+          text = re.sub(r'(\n\s*sha256:\s*)[0-9a-fA-F]{64}', rf'\g<1>{sha}', text, count=1)
+          text = re.sub(r'(\n\s*number:\s*)\d+', r'\g<1>0', text, count=1)
+          open(path, "w", encoding="utf-8").write(text)
+          print(f"Updated {path} -> version {ver}, build number reset to 0")
+          PY
+
+      - name: Open pull request
+        if: steps.latest.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: update-octron-${{ steps.latest.outputs.version }}
+          commit-message: "Update octron to ${{ steps.latest.outputs.version }}"
+          title: "Update octron to ${{ steps.latest.outputs.version }}"
+          body: |
+            Automated update of the `octron` recipe to upstream release
+            [`${{ steps.latest.outputs.tag }}`](https://github.com/OCTRON-tracking/OCTRON-GUI/releases/tag/${{ steps.latest.outputs.tag }}).
+
+            - version: `${{ steps.latest.outputs.current }}` → `${{ steps.latest.outputs.version }}`
+            - sha256 recomputed from the release tarball
+            - build number reset to `0`
+
+            ### ⚠️ Manual review needed
+            This bot only touches version / sha256 / build number. Please compare the
+            run dependencies against upstream `pyproject.toml` for this tag and update
+            any changed pins (and the bundled channel packages: napari-pyav-octron,
+            sam2-octron, boxmot-octron, clip-octron):
+
+            https://github.com/OCTRON-tracking/OCTRON-GUI/blob/${{ steps.latest.outputs.tag }}/pyproject.toml
+          labels: automated, dependencies
+          delete-branch: true
