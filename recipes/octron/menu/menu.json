@@ -13,7 +13,6 @@
       "platforms": {
         "win": {
           "desktop": true,
-          "menu": true,
           "command": ["{{ PREFIX }}\\pythonw.exe", "-c", "from octron.main import octron_gui; octron_gui()"]
         },
         "linux": {
