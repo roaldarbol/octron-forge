@@ -12,8 +12,7 @@
       "terminal": false,
       "platforms": {
         "win": {
-          "desktop": true,
-          "command": ["{{ PREFIX }}\\pythonw.exe", "-c", "from octron.main import octron_gui; octron_gui()"]
+          "desktop": true
         },
         "linux": {
           "Categories": ["Science", "Education"]

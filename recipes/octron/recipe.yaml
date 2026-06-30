@@ -46,8 +46,11 @@ requirements:
     - numpy >=2.1.0
     - qtpy >=2.4.3
     - pyqt6
-    - pytorch >=2.5.1
-    - torchvision >=0.20.1
+    # torch and torchvision must be a matching pair (e.g. torch 2.10 <-> torchvision 0.25).
+    # Open '>=' pins let the solver pick a torchvision one release ahead of the torch that
+    # Python 3.11 allows, which is ABI-incompatible. Cap both to the 2.10 / 0.25 line.
+    - pytorch >=2.5.1,<2.11
+    - torchvision >=0.20.1,<0.26
     - tqdm >=4.67.1
     - scipy >=1.15.1
     - pandas >=2.2.3
