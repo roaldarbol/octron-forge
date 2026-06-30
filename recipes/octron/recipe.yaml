@@ -14,7 +14,7 @@ source:
     target_directory: menu
 
 build:
-  number: 2
+  number: 3
   noarch: python
   script:
     - export SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}  # [unix]
