@@ -20,13 +20,11 @@ build:
     - export SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}  # [unix]
     - set SETUPTOOLS_SCM_PRETEND_VERSION=${{ version }}     # [win]
     - python -m pip install . -vv --no-deps --no-build-isolation
-    # Install menuinst shortcut definition + icons into $PREFIX/Menu
-    - mkdir -p $PREFIX/Menu                                              # [unix]
-    - cp menu/menu.json $PREFIX/Menu/octron.json                         # [unix]
-    - cp menu/octron.ico menu/octron.icns menu/octron.png $PREFIX/Menu/  # [unix]
-    - if not exist %PREFIX%\Menu mkdir %PREFIX%\Menu                     # [win]
-    - copy menu\menu.json %PREFIX%\Menu\octron.json                      # [win]
-    - copy menu\octron.* %PREFIX%\Menu\                                  # [win]
+    # noarch:python builds once on Linux; the Menu files ship in the package and
+    # menuinst consumes them per-platform at install time.
+    - mkdir -p $PREFIX/Menu
+    - cp menu/menu.json $PREFIX/Menu/octron.json
+    - cp menu/octron.ico menu/octron.icns menu/octron.png $PREFIX/Menu/
   python:
     entry_points:
       - octron-gui = octron.main:octron_gui
