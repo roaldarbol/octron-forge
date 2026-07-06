@@ -23,7 +23,7 @@ jobs:
       RECIPE: recipes/octron/recipe.yaml
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Resolve latest upstream version
         id: latest
@@ -71,7 +71,7 @@ jobs:
 
       - name: Open pull request
         if: steps.latest.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: update-octron-${{ steps.latest.outputs.version }}
           commit-message: "Update octron to ${{ steps.latest.outputs.version }}"
