@@ -49,7 +49,7 @@ jobs:
 
       - name: Build recipe
         if: steps.changes.outputs.changed == 'true'
-        uses: prefix-dev/rattler-build-action@v0.2.38
+        uses: prefix-dev/rattler-build-action@v0.2.39
         with:
           recipe-path: recipes/${{ matrix.recipe }}/recipe.yaml
           upload-artifact: true
